@@ -35,37 +35,22 @@ public class CustomerController {
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
+    
+    @PostMapping("/add")
+    public ResponseEntity addCustomerLoneApp(@RequestBody Customer customerDTO) {
+        customerService.addCustomer(customerDTO);
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
 
     @GetMapping("/all")
     public ResponseEntity<List<Customer>> getAllCustomers() {
         return new ResponseEntity(customerService.getAllCustomers(), HttpStatus.OK);
     }
     
-    @PostMapping("/submit-loan-application")
-    public String submitLoanApplication(@RequestBody Customer customer) {
-    	customerService.addCustomer(customer);
-    	
-        return "Save successfully....";
-    }
-
-  //
-
-
-    @PostMapping("/add")
-    public ResponseEntity addCustomer(@RequestBody Customer customerDTO) {
-        customerService.addCustomer(customerDTO);
+    @GetMapping("/customer-with-loneapp")     //not required
+    public List<CustomerDto> findAllWithCustomers() {
         
-        return new ResponseEntity(HttpStatus.CREATED);
-    }
-    
-    
-   
-    @GetMapping("/with-employees")
-    public List<CustomerDto> findAllWithEmployees() {
-        
-    	
-        List<Customer> customers
-                = customerService.getAllCustomers();
+        List<Customer> customers = customerService.getAllCustomers();
         List<CustomerDto> c1=new ArrayList<CustomerDto>();
         List<CustomerDto> c2=new ArrayList<CustomerDto>();
         
@@ -83,38 +68,19 @@ public class CustomerController {
 			c1.add(c);
 		}
         c2.addAll(c1);
-        //c2.forEach(department ->
-        //department.setLoanApplicationsDto(
-        	//	createLoanApplication.findByNationalIdentityNumber(department.getNationalIdentityNumber())));
         return  c2;
     }
-
-
-
 
     @GetMapping("/get/{nationalIdentityNumber}")
     public ResponseEntity<CustomerDto> getCustomerByNationalIdentityNumber(@PathVariable String nationalIdentityNumber) {
         return new ResponseEntity(customerService.getCustomerByNationalIdentityNumber(nationalIdentityNumber), HttpStatus.OK);
     }
 
-  /*  @PutMapping("/update/{nationalIdentityNumber}")
-    public ResponseEntity updateCustomer(@PathVariable String nationalIdentityNumber, @RequestBody CustomerDto customerDTO) {
-        customerService.updateCustomer(nationalIdentityNumber, customerDTO);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @PatchMapping("/update/{nationalIdentityNumber}")
-    public ResponseEntity updateCustomerPartially(@PathVariable String nationalIdentityNumber, @RequestBody Map<Object, Object> objectMap) {
-        customerService.updateCustomerPartially(nationalIdentityNumber, objectMap);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @DeleteMapping("/delete/{nationalIdentityNumber}")
-    public ResponseEntity deleteCustomer(@PathVariable String nationalIdentityNumber) {
-        customerService.deleteCustomer(nationalIdentityNumber);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-*/
     
+    
+    
+    
+    
+ 
 
 }

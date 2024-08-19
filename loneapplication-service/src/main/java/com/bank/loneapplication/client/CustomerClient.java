@@ -1,13 +1,10 @@
 package com.bank.loneapplication.client;
 
-import java.util.Optional;
-
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.bank.loneapplication.dto.CustomerDTO;
+import com.bank.loneapplication.dto.CustomerDTO2;
 
 
 
@@ -23,7 +20,7 @@ public interface CustomerClient {
     //public Optional<CustomerDTO> findByCustomer(@PathVariable("nationalIdentityNumber") String nationalIdentityNumber);
 
 	 @GetMapping("/customer/get/{nationalIdentityNumber}")
-	    public CustomerDTO getCustomerByNationalIdentityNumber(@PathVariable("nationalIdentityNumber") String nationalIdentityNumber);
+	    public CustomerDTO2 getCustomerByNationalIdentityNumber(@PathVariable("nationalIdentityNumber") String nationalIdentityNumber);
 	     
 }
 

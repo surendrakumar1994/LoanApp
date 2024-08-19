@@ -26,7 +26,7 @@ public class NotificationController {
         return new ResponseEntity(notificationService.getNotificationById(notificationId), HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @PostMapping("/create")// need to check
     public ResponseEntity addCustomer(@RequestBody Notification notification) {
         notificationService.createNotification(notification);
         return new ResponseEntity(HttpStatus.CREATED);

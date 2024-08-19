@@ -6,13 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.bank.loneapplication.client.CustomerClient;
-import com.bank.loneapplication.controller.LoneApplicationController;
 import com.bank.loneapplication.dto.CustomerDTO;
+import com.bank.loneapplication.dto.CustomerDTO2;
 import com.bank.loneapplication.dto.LoanApplicationDto;
 import com.bank.loneapplication.dto.NotificationDto;
 import com.bank.loneapplication.entity.Loan;
@@ -90,18 +89,15 @@ public class LoanApplicationService {
 	   //Optional<CustomerDTO> customerByNationalIdentityNumber1 = customerClient.getCustomerByNationalIdentityNumber(nationalIdentityNumber);
        
 	  // var optionalEntity = Optional.ofNullable(customerByNationalIdentityNumber1);
-	   
-	   CustomerDTO customerByNationalIdentityNumber = customerClient.getCustomerByNationalIdentityNumber(nationalIdentityNumber);
-	   LoanApplication loanApplication = new LoanApplication();
-	   loanApplication.setNationalIdentityNumber(customerByNationalIdentityNumber.getNationalIdentityNumber());
-	   Loan l=createLoan(loneType);
-	   loanApplication.setLoan(l);
+	   System.out.println("ccccccccccccccccccccc: "+nationalIdentityNumber);
+	 
+	   LoanApplication loanApplication=loanApplicationRepository.findByNationalIdentityNumber(nationalIdentityNumber);
+	   //loanApplication.setNationalIdentityNumber(customerByNationalIdentityNumber.getNationalIdentityNumber());
+	   Loan createLoan=createLoan(loneType);
+	   loanApplication.setLoan(createLoan);
 	   //loanApplicationRepository.findById(null)
 	   loanApplicationRepository.save(loanApplication);
-      /* customerByNationalIdentityNumber.ifPresent(customer -> {
-           LoanApplication loanApplication = new LoanApplication(optionalEntity.get().get().getNationalIdentityNumber(), createLoan());
-           loanApplicationRepository.save(loanApplication);
-       });*/
+      
    }
 
 
@@ -121,7 +117,7 @@ public class LoanApplicationService {
 
    private Loan loanLimitCalculator(LoanApplication loanApplication) {
 	  // Optional<CustomerDTO> customerByNationalIdentityNumber = customerClient.findByCustomer(loanApplication.getNationalIdentityNumber());
-	   CustomerDTO customerByNationalIdentityNumber = customerClient.getCustomerByNationalIdentityNumber(loanApplication.getNationalIdentityNumber());
+	   CustomerDTO2 customerByNationalIdentityNumber = customerClient.getCustomerByNationalIdentityNumber(loanApplication.getNationalIdentityNumber());
 		  
 	   var loanScore=0;
 	   var income =0.0;
@@ -152,7 +148,7 @@ public class LoanApplicationService {
 
    private void verifyLoan(LoanApplication loanApplication) {
 	  // Optional<CustomerDTO> customerByNationalIdentityNumber = customerClient.findByCustomer(loanApplication.getNationalIdentityNumber());
-	   CustomerDTO customerByNationalIdentityNumber = customerClient.getCustomerByNationalIdentityNumber(loanApplication.getNationalIdentityNumber());
+	   CustomerDTO2 customerByNationalIdentityNumber = customerClient.getCustomerByNationalIdentityNumber(loanApplication.getNationalIdentityNumber());
 		 
        //var loanCustomer = loanApplication.getCustomer();
 
@@ -173,9 +169,7 @@ public class LoanApplicationService {
            loanToUpdate.setLoanStatus(LoanStatus.INACTIVE);
        }
        loanRepository.save(loanToUpdate);
-       //log.info("resulted the application");
-       //TODO: modify sms
-       //log.info("Sent sms result");
+      
    }
 
    private Loan getNotResultedLoanApplicationOfCustomer(LoanApplication customer) {
@@ -192,34 +186,22 @@ public class LoanApplicationService {
    private LoanApplication finalizeLoanApplication(String nationalIdentityNumber) {
 //LoanApplication finalizedApplication = finalizeLoanApplication(nationalIdentityNumber);
 	   //Optional<CustomerDTO> customerByNationalIdentityNumber = customerClient.findByCustomer(nationalIdentityNumber);
-	   CustomerDTO customerByNationalIdentityNumber = customerClient.getCustomerByNationalIdentityNumber(nationalIdentityNumber);
-		
+	   //CustomerDTO2 customerByNationalIdentityNumber = customerClient.getCustomerByNationalIdentityNumber(nationalIdentityNumber);
+	   LoanApplication customerByNationalIdentityNumber=loanApplicationRepository.findByNationalIdentityNumber(nationalIdentityNumber);
        if (customerByNationalIdentityNumber!=null) {
            //LoanApplication loanApplication1 = customerByNationalIdentityNumber.get().getLoanApplications().stream().findFirst().get();
     	   
     	   
     	   
-    	   var loanApplication = customerByNationalIdentityNumber.getLoanApplicationsDto().stream()
-    	    		.findFirst().get();
+    	   //var loanApplication = customerByNationalIdentityNumber.getLoanApplicationsDto().stream().findFirst().get();
+    	   
     	   LoanApplication p=new LoanApplication();
-    	   p.setNationalIdentityNumber(loanApplication.getNationalIdentityNumber());
-           verifyLoan(p);
+    	   //p.setNationalIdentityNumber(loanApplication.getNationalIdentityNumber());
+           verifyLoan(customerByNationalIdentityNumber);
        }
 
-       List<LoanApplicationDto> aa=customerByNationalIdentityNumber.getLoanApplicationsDto();
-       List<LoanApplication> listlon= new ArrayList<LoanApplication>();
-       List<LoanApplication> listlon2= new ArrayList<LoanApplication>();
-       for (LoanApplicationDto lo : aa) {
-    	   LoanApplication lon=new LoanApplication();
-    	   lon.setNationalIdentityNumber(lo.getNationalIdentityNumber());
-    	   listlon.add(lon);
-	}
-       listlon2.addAll(listlon);
-       return listlon2.stream()
-               .filter(loanApplication -> loanApplication.getNationalIdentityNumber() == loanApplication.getNationalIdentityNumber())
-               //.filter(loanApplication -> loanApplication.getLoan().getLoanStatus() == LoanStatus.ACTIVE)
-               .findAny()
-               .orElseThrow(() -> new InvalidLoanApplicationException("."));
+  
+       return customerByNationalIdentityNumber;
    }
 
 

@@ -32,13 +32,13 @@ public class LoneApplicationController {
 	@Autowired
 	private LoanApplicationRepository loneapprepo;
 	
-	@PostMapping
+	@PostMapping("/addLone")
     public LoanApplication add(@RequestBody LoanApplication lone) {
      
         return loanApplicationService.add(lone);
     }
 
-	@PostMapping("/add-lone-customer")
+	@PostMapping("/add-lone-customer")  
     public ResponseEntity addCustomer(@RequestBody LoanApplicationDto lo) {
 		System.out.println("lone controller : "+lo);
 		LoanApplication c=new LoanApplication();
@@ -47,18 +47,18 @@ public class LoneApplicationController {
         
         return new ResponseEntity(HttpStatus.CREATED);
     }
-    @GetMapping
+    @GetMapping   
     public List<LoanApplication> findAll() {
         
         return loanApplicationService.findAll();
     }
         
-        @GetMapping("/customer/{nationalIdentityNumber}")
+        @GetMapping("/customer/{nationalIdentityNumber}")  
         public List<LoanApplicationDto> findByNationalIdentityNumber(@PathVariable("nationalIdentityNumber") String nationalIdentityNumber) {
             return loanApplicationService.findByNationalIdentityNumber(nationalIdentityNumber);
         }
         
-        @PostMapping("/create/{nationalIdentityNumber}/{loneType}")
+        @PostMapping("/create/{nationalIdentityNumber}/{loneType}")  
         public ResponseEntity<Integer> createLoanApplication(@PathVariable("nationalIdentityNumber") String nationalIdentityNumber,
         		@PathVariable("loneType") String loneType) {
         	System.out.println("loneType :"+loneType);
@@ -77,12 +77,12 @@ public class LoneApplicationController {
             return new ResponseEntity(loanApplicationService.getLoanApplicationResult(nationalIdentityNumber), HttpStatus.OK);
         }
         
-        @GetMapping(value = "/loneapplication/{loneId}")
+        @GetMapping(value = "/loneapplication/{loneId}")  
         public ResponseEntity<LoanApplicationDto> getLoanApplicationByIds(@PathVariable("loneId") Long loneId) {
             return new ResponseEntity(loanApplicationService.getLoanApplicationByIds(loneId), HttpStatus.OK);
         }
         
-        @PostMapping(value = "/loneapplication/notificationupdate/{loneId}")
+        @PostMapping(value = "/loneapplication/notificationupdate/{loneId}") 
         public ResponseEntity<LoanApplicationDto> updateLoanAppNotification(NotificationDto loanAppDto) {
             return new ResponseEntity(loanApplicationService.updateLoanAppNotification(loanAppDto), HttpStatus.OK);
         }
